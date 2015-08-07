@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<header>
+	<meta http-equiv="Content-type" content="text/html;charset=utf-8">
+	<title>jquery ajax</title>
+	<style type="text/css">
+		.loading{
+			background:url(https://img.alicdn.com/tps/i1/TB1Q4fJFVXXXXXiXFXXJgUmHVXX-184-38.gif) no-repeat scroll 50% 50%;
+		}
+	</style>
+	<script src="jquery.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			lazyload_cc("loading",400);//body超出窗口400px之后再启用
+
+		});
+		function lazyload_cc(className,beginHeight){
+			//功能：当div完整出现在屏幕时，加载。
+			//参数className，需要进行懒加载的元素的类名，要取一样的名字
+			//参数beginHeight，滚动条滚到哪里，开始监听
+			//必须有inited熟悉你给，request-url属性，loading的图片自己准备。可以卸载.loading中。
+			if(!className) {
+				console.error("lazyload_cc方法中缺少className参数");
+				return;
+			}
+			if(!beginHeight) beginHeight=0;
+			lazyDivList=$("."+className);
+			$(window).scroll(function(){
+				srcTop=$(window).scrollTop();
+				if(srcTop>=beginHeight){
+					lazyDivList.trigger("lazyme",$(window).scrollTop());
+				}				
+			});
+			lazyDivList.bind("lazyme",function(e,scrTop){
+				var offset=$(this).offset().top;
+				var interval=$(window).height()-$(this).height();//当前页面可视高度
+				var sumB=offset;
+				var sumS=offset-interval;
+				var url=$(this).attr("request-url");
+
+				if(scrTop>=sumS && scrTop<=sumB){
+					$(this).load(url,function(responseTxt,statusTxt,xhr){
+						if (statusTxt=="success") {
+							$(this).removeClass(className);
+							$(this).unbind("lazyme");
+						};
+					});
+				}
+			});
+		}
+	</script>
+
+</header>
+<body style="height:3000px;">
+	<div class="loading" style="border:1px solid black;position:absolute;top:800px;left:500px;width:300px;height:400px;"  id="lazyu" request-url="requestU.html">abc</div>
+	<div class="loading" style="border:1px solid black;position:absolute;top:1400px;left:500px;width:300px;height:400px;"  id="lazyu2"  request-url="requestU2.html">abc2</div>
+</body>
+<footer>
+</footer>
+</html>
