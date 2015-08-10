@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-type" content="text/html;charset=utf-8">
+                <script src="js/jquery.min.js"></script>
+        <title>临时测试用</title>
+        <style type="text/css">
+            p{
+                margin: 0;
+                padding: 0;
+            }
+            .floor-show-middle{
+              position: relative;
+              height: 202px;
+              overflow: hidden;
+              background-color: white; 
+              width: 200px;
+            }
+            .floor-show-middle-arrow{
+              position: absolute;
+              top: 90px;
+              width: 18px;
+              height: 25px;
+              cursor:pointer;
+            }
+            .arrow-left{
+              left:15px;background:url(images/left-arow.png) no-repeat;
+            }
+            .arrow-right{
+              right:15px;background:url(images/right-arow.png) no-repeat;
+            }
+            .brand-slide-content{
+              position:relative;
+              width:100px;
+              overflow:hidden;
+              height:100%; 
+              margin:0 auto;
+            }
+            .brand-slide-bg{
+              position: absolute; 
+              width: 500px;
+              overflow:hidden; 
+              height: 100%;
+              border: 1px solid black;
+              visibility: hidden;
+            }
+            .page-current{
+              visibility: visible;
+              z-index: 1;
+            }
+            .pt-page{
+              margin:0;
+              padding:0;
+              float: left; 
+              width: 100px; 
+              position: absolute;
+              /*visibility: hidden;*/
+            }
+            .brand-slide-bg a{
+              display: block;
+              padding: 17px 5px 0;
+              width: 90px;
+              height: 45px;
+              text-align: center;
+            }
+            .moveFromRight{
+              animation:moveFromRight 0.5s ease 1;
+              -moz-animation:moveFromRight 0.5s ease 1; /* Firefox */
+              -webkit-animation:moveFromRight 0.5s ease 1; /* Safari and Chrome */
+              -o-animation:moveFromRight 0.5s ease 1; /* Opera */
+            }
+            .moveToLeft{
+              animation:moveToLeft 0.5s ease 1;
+              -moz-animation:moveToLeft 0.5s ease 1; /* Firefox */
+              -webkit-animation:moveToLeft 0.0.5s ease 1; /* Safari and Chrome */
+              -o-animation:moveToLeft 0.5s ease 1; /* Opera */
+            }
+            .moveFromLeft{
+              animation:moveFromLeft 0.5s ease 1;
+              -moz-animation:moveFromLeft 0.5s ease 1; /* Firefox */
+              -webkit-animation:moveFromLeft 0.5s ease 1; /* Safari and Chrome */
+              -o-animation:moveFromLeft 0.5s ease 1; /* Opera */
+            }
+            .moveToRight{
+              animation:moveToRight 0.5s ease 1;
+              -moz-animation:moveToRight 0.5s ease 1; /* Firefox */
+              -webkit-animation:moveToRight 0.5s ease 1; /* Safari and Chrome */
+              -o-animation:moveToRight 0.5s ease 1; /* Opera */
+            }
+           
+            @-webkit-keyframes moveToLeft {
+                to { -webkit-transform: translateX(-100%); }
+            }
+            @-moz-keyframes moveToLeft {
+                to { -moz-transform: translateX(-100%); }
+            }
+            @keyframes moveToLeft {
+                to { transform: translateX(-100%); }
+            }
+            @-webkit-keyframes moveFromLeft {
+                from { -webkit-transform: translateX(-100%); }
+            }
+            @-moz-keyframes moveFromLeft {
+                from { -moz-transform: translateX(-100%); }
+            }
+            @keyframes moveFromLeft {
+                from { transform: translateX(-100%); }
+            }
+
+            @-webkit-keyframes moveToRight { 
+                to { -webkit-transform: translateX(100%); }
+            }
+            @-moz-keyframes moveToRight { 
+                to { -moz-transform: translateX(100%); }
+            }
+            @keyframes moveToRight { 
+                to { transform: translateX(100%); }
+            }
+
+            @-webkit-keyframes moveFromRight {
+                from { -webkit-transform: translateX(100%); }
+            }
+            @-moz-keyframes moveFromRight {
+                from { -moz-transform: translateX(100%); }
+            }
+            @keyframes moveFromRight {
+                from { transform: translateX(100%); }
+            }
+
+        </style>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $(".brand-slide-bg").children("p").bind('webkitAnimationStart', function() {
+                   $(this).parent(".brand-slide-bg").attr("is-animating",true);     
+                });
+                $(".brand-slide-bg").children("p").bind('webkitAnimationEnd', function() {
+                    if($(this).hasClass("moveToLeft")){
+                      $(this).removeClass("page-current");
+                      $(this).removeClass("moveToLeft");
+                    }
+                    if($(this).hasClass("moveToRight")){
+                      $(this).removeClass("page-current");
+                      $(this).removeClass("moveToRight");
+                    }
+                    if($(this).hasClass("moveFromRight")){
+                      $(this).addClass("page-current");
+                      $(this).removeClass("moveFromRight");
+                    }
+                    if($(this).hasClass("moveFromLeft")){
+                      $(this).addClass("page-current");
+                      $(this).removeClass("moveFromLeft");
+                    }     
+                    $(this).parent(".brand-slide-bg").attr("is-animating",false);  
+                });
+                $(".arrow-right").click(function() {
+                    slide_div=$(this).siblings(".brand-slide-content").children(".brand-slide-bg");
+                    moveLittlePage(slide_div,"right","moveFromLeft","moveToRight");       
+                });
+                $(".arrow-left").click(function() {
+                    slide_div=$(this).siblings(".brand-slide-content").children(".brand-slide-bg");
+                    moveLittlePage(slide_div,"left","moveFromRight","moveToLeft");       
+                });
+                page_auto_move();
+            });
+            function page_auto_move(){
+                $(".brand-slide-bg").each(function(){
+                    moveLittlePage($(this),"right","moveFromLeft","moveToRight");     
+                }); 
+                setTimeout("page_auto_move()",2000);
+            }
+            function moveLittlePage(slide_div,way,from_css,to_css){
+                if(slide_div.attr("is-animating")=="true"){return;}//动画未结束不能开始
+                var current_css="page-current";
+                var current_p=slide_div.children(".page-current");
+                current_p.addClass(to_css);
+                if(way=="left"){
+                    if (current_p.next().length<=0) {
+                        slide_div.children().first().addClass(from_css);
+                        slide_div.children().first().addClass(current_css);
+                    }else{
+                        current_p.next().addClass(from_css);
+                        current_p.next().addClass(current_css);
+                    }  
+                }else if(way=="right"){
+                    if (current_p.prev().length<=0) {
+                        slide_div.children().last().addClass(from_css);
+                        slide_div.children().last().addClass(current_css);
+                    }else{
+                        current_p.prev().addClass(from_css);
+                        current_p.prev().addClass(current_css);
+                    }  
+                }  
+            }
+        </script>
+    </head>
+    <body>
+        <div class="floor-show-middle">
+            <a class="floor-show-middle-arrow arrow-left"  title="上一个幻灯片"></a>
+            <a  class="floor-show-middle-arrow  arrow-right"   title="下一个幻灯片"></a>
+            <div class="brand-slide-content">
+                <div class="brand-slide-bg " is-animating="false">
+                    <p class="pt-page page-current">
+                        <a href=""><img src="images/1-1.jpg"></a>
+                        <a href=""><img src="images/1-2.jpg"></a>
+                        <a href=""><img src="images/1-3.jpg"></a>
+                    </p>
+                    <p class="pt-page">
+                        <a href=""><img src="images/2-1.jpg"></a>
+                        <a href=""><img src="images/2-2.jpg"></a>
+                        <a href=""><img src="images/2-3.jpg"></a>
+                    </p>
+                    <p class="pt-page">
+                        <a href=""><img src="images/3-1.jpg"></a>
+                        <a href=""><img src="images/3-2.jpg"></a>
+                        <a href=""><img src="images/3-3.jpg"></a>
+                    </p>
+                   －
+                </div>
+            </div>
+        </div>
+        <div class="floor-show-middle">
+            <a class="floor-show-middle-arrow arrow-left"  title="上一个幻灯片"></a>
+            <a  class="floor-show-middle-arrow  arrow-right"   title="下一个幻灯片"></a>
+            <div class="brand-slide-content">
+                <div class="brand-slide-bg" is-animating="false">                   
+                    <p class="pt-page page-current">
+                        <a href=""><img src="images/1-1.jpg"></a>
+                        <a href=""><img src="images/1-2.jpg"></a>
+                        <a href=""><img src="images/1-3.jpg"></a>
+                    </p>
+                    <p class="pt-page">
+                        <a href=""><img src="images/2-1.jpg"></a>
+                        <a href=""><img src="images/2-2.jpg"></a>
+                        <a href=""><img src="images/2-3.jpg"></a>
+                    </p>
+                    <p class="pt-page">
+                        <a href=""><img src="images/3-1.jpg"></a>
+                        <a href=""><img src="images/3-2.jpg"></a>
+                        <a href=""><img src="images/3-3.jpg"></a>
+                    </p>
+                   
+                </div>
+            </div>
+        </div>
+
+    </body>
+</html>
