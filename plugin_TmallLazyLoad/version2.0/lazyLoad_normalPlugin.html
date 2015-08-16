@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<header>
+	<meta http-equiv="Content-type" content="text/html;charset=utf-8">
+	<title>jquery ajax</title>
+	<style type="text/css">
+		.loading{
+			background:url(https://img.alicdn.com/tps/i1/TB1Q4fJFVXXXXXiXFXXJgUmHVXX-184-38.gif) no-repeat scroll 50% 50%;
+		}
+	</style>
+</header>
+<body style="height:3000px;">
+	<div class="loading" style="border:1px solid black;position:absolute;top:800px;left:500px;width:300px;height:400px;"  id="lazyu" request-url="requestU.html">abc</div>
+	<div class="loading" style="border:1px solid black;position:absolute;top:1400px;left:500px;width:300px;height:400px;"  id="lazyu2"  request-url="requestU2.html">abc2</div>
+</body>
+<footer>
+</footer>
+
+</html>
+<script src="jquery.min.js"></script>
+<script src="lazyload_pcc.min.js"></script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$(".loading:first").lazyLoadDiv_cc({
+			"beginHeight":400,
+			"loadingBgClass":"loading",
+			"whenToLoad":"someIn"
+		});
+		$(".loading:last").lazyLoadDiv_cc({
+			"beginHeight":400,
+			"loadingBgClass":"loading",
+		});
+	});
+</script>
